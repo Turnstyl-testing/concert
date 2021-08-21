@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Turnstyl-testing/turnstyl-testing#readme",
   "dependencies": {
+    "faker": "^5.5.3",
     "kafkajs": "^1.15.0"
   }
 }
