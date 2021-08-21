@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/Turnstyl-testing/turnstyl-testing#readme",
   "dependencies": {
-    "kafkajs": "^1.15.0"
+    "@google-cloud/bigquery": "^5.7.1",
+    "kafkajs": "^1.15.0",
+    "node": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.1"
   }
 }
