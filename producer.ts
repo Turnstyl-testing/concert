@@ -1,4 +1,4 @@
-const { Kafka } = require("kafkajs");
+import { Kafka } from "kafkajs";
 ("use strict");
 
 const Producer = async (
