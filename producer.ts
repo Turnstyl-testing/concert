@@ -5,7 +5,6 @@ const Producer = async (
   producerName: string,
   message: object,
   topic: string
-  // TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
 ) => {
   try {
     // Signal to user that producer is running
@@ -23,7 +22,11 @@ const Producer = async (
     await producer.send({
       topic: topic,
       // TO DO: Look into the types of objects that can be passed in
-      messages: [{ value: JSON.stringify(message) }],
+      messages: [
+        { value: JSON.stringify("Yolan and Dillon trying hard") },
+        { value: JSON.stringify("Test msg 2") },
+        { value: JSON.stringify("This should be 3rd") },
+        { value: JSON.stringify("This should be either first or last??!") }],
     });
     // Close connection to the broker
     await producer.disconnect();
