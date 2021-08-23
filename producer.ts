@@ -15,7 +15,7 @@ const producer = async (
     //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
     const kafka = new Kafka({
       clientId: producerName,
-      brokers: ["kafka:29092"],
+      brokers: ["kafka:9092"],
     });
     // Init the producer on the kafka object
     const producer = kafka.producer();
