@@ -1,10 +1,12 @@
 const { Kafka } = require("kafkajs");
-("use strict");
 
-const Producer = async (
+let kafkaConnectionIsOpen = false;
+
+const producer = async (
   producerName: string,
   message: object,
   topic: string
+  // TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
 ) => {
   try {
     // Signal to user that producer is running
@@ -12,7 +14,7 @@ const Producer = async (
     //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
     const kafka = new Kafka({
       clientId: producerName,
-      brokers: ["localhost::29092"],
+      brokers: ["kafka:9092"],
     });
     // Init the producer on the kafka object
     const producer = kafka.producer();
@@ -22,11 +24,7 @@ const Producer = async (
     await producer.send({
       topic: topic,
       // TO DO: Look into the types of objects that can be passed in
-      messages: [
-        { value: JSON.stringify("Yolan and Dillon trying hard") },
-        { value: JSON.stringify("Test msg 2") },
-        { value: JSON.stringify("This should be 3rd") },
-        { value: JSON.stringify("This should be either first or last??!") }],
+      messages: [{ value: JSON.stringify(message) }],
     });
     // Close connection to the broker
     await producer.disconnect();
@@ -37,4 +35,4 @@ const Producer = async (
   }
 };
 
-export { Producer };
+export { producer };
