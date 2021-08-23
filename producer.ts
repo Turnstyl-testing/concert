@@ -1,7 +1,9 @@
 const { Kafka } = require("kafkajs");
 ("use strict");
 
-const Producer = async (
+let kafkaConnectionIsOpen = false;
+
+const producer = async (
   producerName: string,
   message: object,
   topic: string
@@ -13,7 +15,7 @@ const Producer = async (
     //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
     const kafka = new Kafka({
       clientId: producerName,
-      brokers: ["localhost::29092"],
+      brokers: ["kafka:9092"],
     });
     // Init the producer on the kafka object
     const producer = kafka.producer();
@@ -34,4 +36,4 @@ const Producer = async (
   }
 };
 
-export { Producer };
+export { producer };
