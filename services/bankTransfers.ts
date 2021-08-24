@@ -20,8 +20,8 @@ function bankTransfers() {
 
     // Declare a new bank transfer object and assign datatypes
     interface bankTransferTransaction {
-      readonly event_id: String;
-      readonly eventTimstamp: Date;
+      readonly eventId: String;
+      readonly eventTimestamp: Date;
       readonly eventName: String;
       readonly senderName: String;
       readonly senderAccount: String;

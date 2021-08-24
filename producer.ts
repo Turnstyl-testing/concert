@@ -1,5 +1,4 @@
 const { Kafka } = require("kafkajs");
-("use strict");
 
 let kafkaConnectionIsOpen = false;
 

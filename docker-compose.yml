@@ -38,6 +38,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   ofelia:
+    restart: always
     image: mcuadros/ofelia:latest
     depends_on:
       - nginx
@@ -54,6 +55,7 @@ services:
     image: nginx
 
   financeapp:
+    restart: always
     tty: true
     build:
       context: .
