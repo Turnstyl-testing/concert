@@ -1,56 +1,74 @@
-/**
- * Note - should we generalize this and include in our package? Could be helpful feature and easy win / addition
- *
- */
-
-//google bigquery cloud loading boilerplate, could we use this with non cloud data? e.g. bigquery.load()
-const { BigQuery } = require("@google-cloud/bigquery"); // bigQuery vs. bigQuery-connection?
+const { BigQuery } = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
-// Imports the Google Cloud client library
-const {
-  ConnectionServiceClient,
-} = require("@google-cloud/bigquery-connection");
-const { consumer } = require("./consumer.ts");
+const { Kafka } = require('kafkajs');
 
-// our test topic is "bank_transfer_transactions"
+// Init the kafka connection object
+const kafka = new Kafka({
+  clientId: 'bankTransfers',
+  brokers: ['localhost:29092'],
+});
 
-// Declare async connector
-const Connector = async () => {
-  try {
-    // Here we set up our data consumer boilerplate
-    let queue: string[] = new Array();
-    queue = await consumer(queue, "bank_transfer_transactions");
-    // Declare our desired batch size
-    console.log('Hello Im here', queue);
-  } catch (err) {
-    console.log("consumer issue: ", err);
+// Error handler for Big Query inserts
+function insertHandler(err, apiResponse) {
+  if (err) {
+    // An API error or partial failure occurred.
+    console.log(err);
+    if (err.name === 'PartialFailureError') {
+      console.log('Partial fail: ', err.errors);
+    }
+    console.log(apiResponse);
   }
+}
+
+// Counter to track rows inserted into Big Query
+let rowSentCounter = 0;
+
+// Decoupled sendEachMessage function that dumps data from Kafka into Big Query
+const sendEachMessage = async ({ message }) => {
+  // Declare a new variable set to the parsed JSON of message value
+  const messageObj = await JSON.parse(message.value);
+  console.log('Event received', messageObj.event_id);
+  // Connect with BQ and send data to BigQuery
+  // TODO: Consider removing hard coded values for production
+  // Accessing the relevant table in the target dataset
+  const table = await bigquery.dataset('nygroup5').table('new_test_table');
+  await console.log('Inserting row...');
+
+  // Create an insertion timestamp obj
+  const currentTimestamp = new Date(Date.now()).toISOString();
+  // Inserts the JSON objects into my_dataset:my_table.
+  await table.insert(
+    {
+      event_id: messageObj.event_id,
+      event_timestamp: messageObj.eventTimstamp,
+      insertion_timestamp: currentTimestamp,
+      event_name: messageObj.eventName,
+      payload: JSON.stringify(messageObj),
+    },
+    insertHandler
+  );
+  console.log(`row ${rowSentCounter++} inserted`);
+  return;
+};
+
+// Connects to Kafka topic, subscribes and runs the consumer stream
+const Connector = async () => {
+  // Here we set up our data consumer boilerplate
+  let queue: string[] = new Array();
+  // Init our consumer
+  const consumer = kafka.consumer({ groupId: 'test-group' });
+  //Connect to the consumer
+  await consumer.connect();
+  // Subscribe to our desired topic
+  await consumer.subscribe({
+    // TODO: Consider removing hard coded values for production
+    topic: 'bank_transfer_transactions',
+    fromBeginning: true,
+  });
+  // Run consumer - extracting topic, partition and message and pushing to queue
+  await consumer.run({
+    eachMessage: sendEachMessage,
+  });
 };
 
 Connector();
-
-//   // Create a client
-//   const client = new ConnectionServiceClient();
-
-//   // when queue gets large enough -> dump it into big query
-//   if (queue.length === BATCHSIZE) {
-//     // TODO -----
-//     // research how to add the data here from our queue
-//     // bigQuery boilerplate below
-//     const parent = `projects/${project}/locations/US`; // what should this be connected to?
-
-//     console.info(`found ${connections.length} connections:`);
-//     console.info(connections);
-//   }
-//   const listConnectionsResponse = listConnections();
-
-//   // bigquery.load() ?
-
-//   // at end, dump queue and reset
-//   queue = [];
-// };
-
-// async function listConnections() {
-//   const [connections] = await client.listConnections({
-//     parent: parent,
-//   });
