@@ -1,6 +1,10 @@
 var faker = require("faker");
 ("use strict");
 
+/**
+ * @function bankTransfers created fake data for the test client 
+ * @returns an Object with the valid testing schema
+ */
 function bankTransfers() {
     // Declare a new bank transfer object and assign datatypes
     interface bankTransferTransaction {
