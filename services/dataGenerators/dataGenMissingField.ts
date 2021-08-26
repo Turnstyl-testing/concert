@@ -2,8 +2,9 @@ var faker = require("faker");
 ("use strict");
 
 /**
- * @function bankTransfers generates object of fake data with 
+ * @function bankTransfersMissingField generates object of fake data with 
  * missing fields from the main schema 
+ * @returns Object with Missing fields from the the main schema 
  */
 function bankTransfersMissingField() {
     // Declare a new bank transfer object and assign datatypes
