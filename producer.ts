@@ -1,16 +1,26 @@
 const { Kafka } = require('kafkajs');
 //const { turnstyl } = require('../turnstyl/src/Subscriber.ts');
 
-let kafkaConnectionIsOpen = false;
+// TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
+// TO DO: Look into the types of objects that can be passed in
 
-const passTurnstyl = function (message) { //CURRENTLY UNUSED
+/**
+ * @function passTurnstyl INCOMPLETE - does turnstyl Front Bias processes * this shouldnt be await
+ * @param message Object message to be compared to DB schema
+ */
+const passTurnstyl = function (message) { 
   //turnt;
   return message;
 };
 
-// TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
 
 
+/**
+ * @function producer function that connects to Kafka sends a message then disconnects
+ * @param producerName STRING name of producer
+ * @param message STRING message that will be sent to Kafka
+ * @param topic STRINg name of the topic that message will be posed to on Kafka
+ */
 const producer = async ( 
   producerName: string,
   message: object,
@@ -23,31 +33,34 @@ const producer = async (
     clientId: producerName,
     brokers: ['kafka:9092'],
   });
-
   // Signal to user that producer is running
   console.log('Producer is operational');
 
   // Init the producer on the kafka object
   const producer = kafka.producer();
 
-  try {
+  try {//CONNECTION
     // Connect to the producer
     await producer.connect();
-  } catch (err) {
-    console.log('Producer Connection Error:',err);
+  } catch (error) {
+    console.log('Producer Connection(erroror:',error);
+    //return?
   }
 
-    
-    // Send our message to topic x
+  try {//SEND MESSAGE
     await producer.send({
       topic: topic,
-      // TO DO: Look into the types of objects that can be passed in
+      
       messages: [{ value: JSON.stringify(message) }],
     });
-    // Close connection to the broker
-    await producer.disconnect();
-    // Confirm to use that data has been sent
-    console.log('Data sent by producer');
+  } catch (error) {
+    console.log('error in message send',error)
+  }
+
+  console.log('Data sent by producer');
+
+  // Close connection to the broker
+  producer.disconnect();
   };
 
 export { producer };
