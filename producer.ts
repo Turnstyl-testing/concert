@@ -53,11 +53,12 @@ const producer = async (
       
       messages: [{ value: JSON.stringify(message) }],
     });
+    console.log('message is:',message)
   } catch (error) {
     console.log('error in message send',error)
   }
 
-  console.log('Data sent by producer');
+  console.log('Data sent by producerXXX');
 
   // Close connection to the broker
   producer.disconnect();
