@@ -1,9 +1,11 @@
-const { Kafka } = require('kafkajs');
-const { turnstyl } = require('../turnstyl/src/Subscriber.ts');
+const { Kafka } = require("kafkajs");
+const { Turnstyl } = require("./turnstyl.ts");
 
 let kafkaConnectionIsOpen = false;
 
-console.log(turnstyl);
+const newTS = new Turnstyl();
+newTS.record;
+// newTS.checkMessage()
 
 const producer = async (
   producerName: string,
@@ -13,20 +15,21 @@ const producer = async (
 ) => {
   try {
     // Signal to user that producer is running
-    console.log('Producer is operational');
+    console.log("Producer is operational");
+    newTS.record(topic, message);
+    console.log("now checking schema from DB ");
+    await newTS.checkSchema(topic); // YOLO
+    console.log("this is the turnstyle Schema", newTS.schemas);
     //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
     const kafka = new Kafka({
       clientId: producerName,
-      brokers: ['kafka:9092'],
+      brokers: ["kafka:9092"],
     });
     // Init the producer on the kafka object
+
     const producer = kafka.producer();
     // Connect to the producer
     await producer.connect();
-    const passTurnstyl = await function (message) {
-      //turnt;
-      return message;
-    };
     // Send our message to topic x
     await producer.send({
       topic: topic,
@@ -36,10 +39,11 @@ const producer = async (
     // Close connection to the broker
     await producer.disconnect();
     // Confirm to use that data has been sent
-    await console.log('Data sent by producer');
+    await console.log("Data sent by producer");
   } catch (err) {
     console.log(err);
   }
 };
 
 export { producer };
+
