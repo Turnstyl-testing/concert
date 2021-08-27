@@ -2,10 +2,11 @@ var faker = require("faker");
 ("use strict");
 
 /**
- * @function bankTransfers created fake data for the test client 
- * @returns an Object with the valid testing schema
+ * @function bankTransfersMissingField generates object of fake data with 
+ * missing fields from the main schema 
+ * @returns Object with Missing fields from the the main schema 
  */
-function bankTransfers() {
+function bankTransfersMissingField() {
     // Declare a new bank transfer object and assign datatypes
     interface bankTransferTransaction {
       readonly eventId: String;
@@ -15,12 +16,12 @@ function bankTransfers() {
       readonly senderAccount: String;
       readonly senderAccountName: String;
       readonly receiverName: String;
-      readonly receiverAccount: String;
+      //readonly receiverAccount: String;
       readonly receiverAccountName: String;
       readonly transactionDesc: String;
-      readonly transaction_type: String;
+      //readonly transaction_type: String;
       readonly amount: String;
-      readonly currency: String;
+      //readonly currency: String;
       readonly curencyCode: String;
     };
     // Declare bank transfer object
@@ -32,15 +33,15 @@ function bankTransfers() {
       senderAccount: faker.finance.account(),
       senderAccountName: faker.finance.accountName(),
       receiverName: faker.name.findName(),
-      receiverAccount: faker.finance.account(),
+      //receiverAccount: faker.finance.account(), -Missing Field
       receiverAccountName: faker.finance.accountName(),
       transactionDesc: faker.finance.transactionDescription(),
-      transaction_type: faker.finance.transactionType(),
+      //transaction_type: faker.finance.transactionType(), -Missing Field
       amount: faker.finance.amount(),
-      currency: faker.finance.currencyName(),
+      //currency: faker.finance.currencyName(), -Missing Field 
       curencyCode: faker.finance.currencyCode(),
     };
     return bankTransferTransaction;
   };
 
-export { bankTransfers };
+export { bankTransfersMissingField };
