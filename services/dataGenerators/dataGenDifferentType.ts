@@ -2,24 +2,24 @@ var faker = require("faker");
 ("use strict");
 
 /**
- * @function bankTransfers created fake data for the test client 
- * @returns an Object with the valid testing schema
+ * @function bankTransfers generates object of fake data with different datatypes than the main
+ * @returns an object with fake data, with 3 different datatypes then the main schema
  */
-function bankTransfers() {
+function bankTransfersDifferentType() {
     // Declare a new bank transfer object and assign datatypes
     interface bankTransferTransaction {
       readonly eventId: String;
       readonly eventTimestamp: Date;
       readonly eventName: String;
       readonly senderName: String;
-      readonly senderAccount: String;
+      readonly senderAccount: Number;
       readonly senderAccountName: String;
       readonly receiverName: String;
-      readonly receiverAccount: String;
+      readonly receiverAccount: Number;
       readonly receiverAccountName: String;
       readonly transactionDesc: String;
       readonly transaction_type: String;
-      readonly amount: String;
+      readonly amount: Number;
       readonly currency: String;
       readonly curencyCode: String;
     };
@@ -29,18 +29,18 @@ function bankTransfers() {
       eventTimstamp: faker.datatype.datetime(),
       eventName: "bank_transfer_transactions",
       senderName: faker.name.findName(),
-      senderAccount: faker.finance.account(),
+      senderAccount: Number(faker.finance.account()),
       senderAccountName: faker.finance.accountName(),
       receiverName: faker.name.findName(),
-      receiverAccount: faker.finance.account(),
+      receiverAccount: Number(faker.finance.account()),
       receiverAccountName: faker.finance.accountName(),
       transactionDesc: faker.finance.transactionDescription(),
       transaction_type: faker.finance.transactionType(),
-      amount: faker.finance.amount(),
+      amount: Number(faker.finance.amount()),
       currency: faker.finance.currencyName(),
       curencyCode: faker.finance.currencyCode(),
     };
     return bankTransferTransaction;
   };
 
-export { bankTransfers };
+export { bankTransfersDifferentType };

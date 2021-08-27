@@ -1,12 +1,24 @@
-const { bankTransfers } = require("./bankTransfers.ts");
-const { producer } = require("../producer.ts");
+const { bankTransfers } = require('./bankTransfers.ts');
+const { producer } = require('../producer.ts');
+import { bankTransfersDifferentType } from "./dataGenerators/dataGenDifferentType";
+import { bankTransfersMissingField } from "./dataGenerators/dataGenMissingField";
 
-//import { bankTransfers } from "./bankTransfers";
-//import { producer } from "../producer";
+/**
+ * @function mixedDataGenerator function randomly chooses One schema and sends the message
+ * @returns 
+ */
+ const mixedDataGenerator = ()=>{
+  //collection of data generators
+   const dataGens = [bankTransfers, bankTransfersDifferentType, bankTransfersMissingField]
+ //choose random data from set
+ 
+   bankTransferObject = dataGens[Math.floor(Math.random() * dataGens.length)]()
+ }
 
-("use strict");
-console.log("test");
 // Declare an object set to the eval result of running the bankTransfers script
-const bankTransferObject = bankTransfers();
+let bankTransferObject;
 
-producer("bankTransfers", bankTransferObject, bankTransferObject.eventName);
+mixedDataGenerator()
+
+producer('bankTransfers', bankTransferObject, bankTransferObject.eventName);
+
