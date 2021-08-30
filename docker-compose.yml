@@ -1,8 +1,8 @@
-version: "2"
+version: '2'
 
 networks:
   turnstyl-test-platform:
-    driver: "bridge"
+    driver: 'bridge'
 
 services:
   zookeeper:
@@ -10,7 +10,7 @@ services:
     networks:
       - turnstyl-test-platform
     logging:
-      driver: local
+      driver: none
     image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -21,7 +21,7 @@ services:
   kafka:
     restart: always
     logging:
-      driver: local
+      driver: none
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
@@ -57,12 +57,14 @@ services:
   financeapp:
     restart: always
     tty: true
+    logging:
+      driver: local
     build:
       context: .
       dockerfile: Dockerfile
     labels:
-      ofelia.enabled: "true"
-      ofelia.job-exec.financeapp.schedule: "@every 10s"
-      ofelia.job-exec.financeapp.command: "ts-node services/eventStreamer.ts"
+      ofelia.enabled: 'true'
+      ofelia.job-exec.financeapp.schedule: '@every 10s'
+      ofelia.job-exec.financeapp.command: 'ts-node services/eventStreamer.ts'
     networks:
       - turnstyl-test-platform
