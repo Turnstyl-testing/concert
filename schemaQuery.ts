@@ -1,4 +1,5 @@
-const { BigQuery } = require("@google-cloud/bigquery");
+const { BigQuery } = require('@google-cloud/bigquery');
+require('dotenv').config();
 const bigquery = new BigQuery();
 
 // Function that queries the Big Query API and fetches the latest record from our event table
@@ -9,6 +10,7 @@ const schemaQuery = async () => {
 
   // Declare the options object to reference the query
   const options = {
+    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     query: query,
   };
 
@@ -17,7 +19,7 @@ const schemaQuery = async () => {
 
   // Wait for the query to finish
   const [rows] = await job.getQueryResults();
-
+  if (rows[0]) console.log('payload successfully fetched from DB:', rows[0]);
   // return the first row from the table
   return rows[0];
 };
