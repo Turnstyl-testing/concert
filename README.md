@@ -9,7 +9,7 @@ docker-compose up -d
 
 ```
 
-# Testing Turnstyl locally 
+# Testing package locally 
 ```
 root   
 │
