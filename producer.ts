@@ -1,5 +1,5 @@
 const { Kafka } = require('kafkajs');
-const { Turnstyl } = require("./turnstyl.ts");
+const { Turnstyl } = require('./turnstyl.ts');
 
 // TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
 // TO DO: Look into the types of objects that can be passed in
@@ -7,7 +7,7 @@ const { Turnstyl } = require("./turnstyl.ts");
  * @function passTurnstyl INCOMPLETE - does turnstyl Front Bias processes * this shouldnt be await
  * @param message Object message to be compared to DB schema
  */
-const passTurnstyl = function (message) { 
+const passTurnstyl = function (message) {
   //turnt;
   return message;
 };
@@ -22,13 +22,11 @@ newTS.record;
  * @param message STRING message that will be sent to Kafka
  * @param topic STRINg name of the topic that message will be posed to on Kafka
  */
-const producer = async ( 
+const producer = async (
   producerName: string,
   message: object,
   topic: string
-  
 ) => {
-  
   //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
   const kafka = new Kafka({
     clientId: producerName,
@@ -39,33 +37,34 @@ const producer = async (
 
   // Init the producer on the kafka object
   const producer = kafka.producer();
-  
-  newTS.record(topic, message);
-  newTS.checkSchema(topic); 
 
-  try {//CONNECTION
+  newTS.cacheProducerEvent(topic, message);
+  newTS.compareProducerToDBSchema(topic);
+
+  try {
+    //CONNECTION
     // Connect to the producer
     await producer.connect();
   } catch (error) {
-    console.log('Producer Connection error: ',error);
+    console.log('Producer Connection error: ', error);
   }
 
-  try {//SEND MESSAGE
+  try {
+    //SEND MESSAGE
     await producer.send({
       topic: topic,
-      
+
       messages: [{ value: JSON.stringify(message) }],
     });
-    console.log('message is:',message)
+    console.log('message is:', message);
   } catch (error) {
-    console.log('error in message send',error)
+    console.log('error in message send', error);
   }
 
   console.log('Data sent by producer');
 
   // Close connection to the broker
   producer.disconnect();
-  };
+};
 
 export { producer };
-
