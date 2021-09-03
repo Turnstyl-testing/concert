@@ -1,11 +1,14 @@
-const { BigQuery } = require('@google-cloud/bigquery');
-const bigquery = new BigQuery();
-const { Kafka } = require('kafkajs');
+const { BigQuery } = require("@google-cloud/bigquery");
+const bigquery = new BigQuery({
+  projectId: "probable-cove-323115",
+  keyFilename: "./bigQueryServiceCredentials.json",
+});
+const { Kafka } = require("kafkajs");
 
 // Init the kafka connection object
 const kafka = new Kafka({
-  clientId: 'bankTransfers',
-  brokers: ['localhost:29092'],
+  clientId: "bankTransfers",
+  brokers: ["kafka:9092"],
 });
 
 // Error handler for Big Query inserts
@@ -13,8 +16,8 @@ function insertHandler(err, apiResponse) {
   if (err) {
     // An API error or partial failure occurred.
     console.log(err);
-    if (err.name === 'PartialFailureError') {
-      console.log('Partial fail: ', err.errors);
+    if (err.name === "PartialFailureError") {
+      console.log("Partial fail: ", err.errors);
     }
     console.log(apiResponse);
   }
@@ -27,12 +30,12 @@ let rowSentCounter = 0;
 const sendEachMessage = async ({ message }) => {
   // Declare a new variable set to the parsed JSON of message value
   const messageObj = await JSON.parse(message.value);
-  console.log('Event received', messageObj.event_id);
+  console.log("Event received", messageObj.event_id);
   // Connect with BQ and send data to BigQuery
   // TODO: Consider removing hard coded values for production
   // Accessing the relevant table in the target dataset
-  const table = await bigquery.dataset('nygroup5').table('new_test_table');
-  await console.log('Inserting row...');
+  const table = await bigquery.dataset("nygroup5").table("new_test_table");
+  await console.log("Inserting row...");
 
   // Create an insertion timestamp obj
   const currentTimestamp = new Date(Date.now()).toISOString();
@@ -52,17 +55,17 @@ const sendEachMessage = async ({ message }) => {
 };
 
 // Connects to Kafka topic, subscribes and runs the consumer stream
-const Connector = async () => {
+const Consumer = async () => {
   // Here we set up our data consumer boilerplate
   let queue: string[] = new Array();
   // Init our consumer
-  const consumer = kafka.consumer({ groupId: 'test-group' });
+  const consumer = kafka.consumer({ groupId: "test-group" });
   //Connect to the consumer
   await consumer.connect();
   // Subscribe to our desired topic
   await consumer.subscribe({
     // TODO: Consider removing hard coded values for production
-    topic: 'bank_transfer_transactions',
+    topic: "bank_transfer_transactions",
     fromBeginning: true,
   });
   // Run consumer - extracting topic, partition and message and pushing to queue
@@ -71,4 +74,4 @@ const Connector = async () => {
   });
 };
 
-Connector();
+Consumer();
