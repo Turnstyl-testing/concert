@@ -54,6 +54,14 @@ const sendEachMessage = async ({ message }) => {
   return;
 };
 
+// Instanciate `Consumer` function every 45 seconds to avoid running before producer & Kafka does
+const consumerThrottle = async () => {
+  setTimeout(() => {
+    console.log("Kafka not ready, consumer waiting to load");
+    Consumer();
+  }, 45000);
+};
+
 // Connects to Kafka topic, subscribes and runs the consumer stream
 const Consumer = async () => {
   // Here we set up our data consumer boilerplate
@@ -74,4 +82,4 @@ const Consumer = async () => {
   });
 };
 
-Consumer();
+consumerThrottle();
