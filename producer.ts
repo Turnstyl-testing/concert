@@ -1,5 +1,5 @@
-const { Kafka } = require('kafkajs');
-const { Turnstyl } = require('./turnstyl.ts');
+const { Kafka } = require("kafkajs");
+const { Turnstyl } = require("turnstyl");
 
 // TO DO: Consider implmenting a callback and some logic to ensure that a stream can be sent and the connection kept open
 // TO DO: Look into the types of objects that can be passed in
@@ -30,10 +30,10 @@ const producer = async (
   //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
   const kafka = new Kafka({
     clientId: producerName,
-    brokers: ['kafka:9092'],
+    brokers: ["kafka:9092"],
   });
   // Signal to user that producer is running
-  console.log('Producer is operational');
+  console.log("Producer is operational");
 
   // Init the producer on the kafka object
   const producer = kafka.producer();
@@ -46,23 +46,20 @@ const producer = async (
     // Connect to the producer
     await producer.connect();
   } catch (error) {
-    console.log('Producer Connection error: ', error);
+    console.log("Producer Connection error: ", error);
   }
 
   try {
     //SEND MESSAGE
     await producer.send({
       topic: topic,
-
       messages: [{ value: JSON.stringify(message) }],
     });
-    console.log('message is:', message);
+    console.log("message is:", message);
   } catch (error) {
-    console.log('error in message send', error);
+    console.log("error in message send", error);
   }
-
-  console.log('Data sent by producer');
-
+  console.log("Data sent by producer");
   // Close connection to the broker
   producer.disconnect();
 };
