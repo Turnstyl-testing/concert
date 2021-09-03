@@ -38,8 +38,8 @@ const producer = async (
   // Init the producer on the kafka object
   const producer = kafka.producer();
 
-  newTS.record(topic, message);
-  newTS.checkSchema(topic);
+  newTS.cacheProducerEvent(topic, message);
+  newTS.compareProducerToDBSchema(topic);
 
   try {
     //CONNECTION
@@ -53,16 +53,13 @@ const producer = async (
     //SEND MESSAGE
     await producer.send({
       topic: topic,
-
       messages: [{ value: JSON.stringify(message) }],
     });
     console.log("message is:", message);
   } catch (error) {
     console.log("error in message send", error);
   }
-
   console.log("Data sent by producer");
-
   // Close connection to the broker
   producer.disconnect();
 };
