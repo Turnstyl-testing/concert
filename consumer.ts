@@ -82,7 +82,7 @@ const autoRetry = async () => {
     console.log("❤️‍🔥❤️‍🔥❤️‍🔥 Kafka not ready, autoRetry in 5 seconds");
     setTimeout(() => {
       autoRetry();
-    }, 5000);
+    }, 3000);
   }
 };
 
