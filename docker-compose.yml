@@ -70,7 +70,7 @@ services:
       - turnstyl-test-platform
 
   consumer:
-    restart: "no"
+    restart: "always"
     tty: true
     logging:
       driver: local
