@@ -54,24 +54,36 @@ const sendEachMessage = async ({ message }) => {
   return;
 };
 
-// Connects to Kafka topic, subscribes and runs the consumer stream
-const Consumer = async () => {
-  // Here we set up our data consumer boilerplate
-  let queue: string[] = new Array();
-  // Init our consumer
-  const consumer = kafka.consumer({ groupId: "test-group" });
-  //Connect to the consumer
-  await consumer.connect();
-  // Subscribe to our desired topic
-  await consumer.subscribe({
-    // TODO: Consider removing hard coded values for production
-    topic: "bank_transfer_transactions",
-    fromBeginning: true,
-  });
-  // Run consumer - extracting topic, partition and message and pushing to queue
-  await consumer.run({
-    eachMessage: sendEachMessage,
-  });
+const autoRetry = async () => {
+  try {
+    // Connects to Kafka topic, subscribes and runs the consumer stream
+    const Consumer = async () => {
+      // Here we set up our data consumer boilerplate
+      let queue: string[] = new Array();
+      // Init our consumer
+      const consumer = kafka.consumer({ groupId: "test-group" });
+      //Connect to the consumer
+      await consumer.connect();
+      console.log("🏁🏁🏁 consumer connect success");
+      // Subscribe to our desired topic
+      await consumer.subscribe({
+        // TODO: Consider removing hard coded values for production
+        topic: "bank_transfer_transactions",
+        fromBeginning: true,
+      });
+      console.log("🔥🔥🔥 consumer subscribe success");
+      // Run consumer - extracting topic, partition and message and pushing to queue
+      await consumer.run({
+        eachMessage: sendEachMessage,
+      });
+    };
+    Consumer();
+  } catch {
+    console.log("❤️‍🔥❤️‍🔥❤️‍🔥 Kafka not ready, autoRetry in 5 seconds");
+    setTimeout(() => {
+      autoRetry();
+    }, 3000);
+  }
 };
 
-Consumer();
+autoRetry();
