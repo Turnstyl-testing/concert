@@ -28,10 +28,8 @@ const producer = async (
   //Declare a variable kafka assigned to an instance of kafka (door into the kafka brokerage)
   const kafka = new Kafka({
     clientId: producerName,
-    brokers: ['kafka:9092'],
+    brokers: ['localhost:29092'],
   });
-  // Signal to user that producer is running
-  console.log('Producer is operational');
 
   // Init the producer on the kafka object
   const producer = kafka.producer();
@@ -53,11 +51,9 @@ const producer = async (
       topic: topic,
       messages: [{ value: JSON.stringify(message) }],
     });
-    console.log('message is:', message);
   } catch (error) {
     console.log('error in message send', error);
   }
-  console.log('Data sent by producer');
   // Close connection to the broker
   producer.disconnect();
 };

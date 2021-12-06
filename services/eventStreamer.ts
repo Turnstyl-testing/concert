@@ -16,7 +16,7 @@ const mixedDataGenerator = () => {
   ];
   //choose random data from set
 
-  bankTransferObject = dataGens[Math.floor(Math.random() * dataGens.length)]();
+  bankTransferObject = dataGens[0]();
 };
 
 // Declare an object set to the eval result of running the bankTransfers script
